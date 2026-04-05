@@ -327,7 +327,7 @@ export default function EvaluacionesAdminPage() {
           <div className="space-y-4">
             <div>
               <Label htmlFor="trabajador">Trabajador</Label>
-              <Select value={formData.trabajador_id} onValueChange={(value) => setFormData(prev => ({ ...prev, trabajador_id: value }))}>
+              <Select value={formData.trabajador_id} onValueChange={(value) => setFormData(prev => ({ ...prev, trabajador_id: value || '' }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona un trabajador" />
                 </SelectTrigger>
@@ -342,7 +342,7 @@ export default function EvaluacionesAdminPage() {
             </div>
             <div>
               <Label htmlFor="ciclo">Ciclo de Evaluación</Label>
-              <Select value={formData.ciclo_id} onValueChange={(value) => setFormData(prev => ({ ...prev, ciclo_id: value }))}>
+              <Select value={formData.ciclo_id} onValueChange={(value) => setFormData(prev => ({ ...prev, ciclo_id: value || '' }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona un ciclo" />
                 </SelectTrigger>
@@ -357,7 +357,7 @@ export default function EvaluacionesAdminPage() {
             </div>
             <div>
               <Label htmlFor="tipo">Tipo de Evaluador</Label>
-              <Select value={formData.tipo_evaluador} onValueChange={(value: 'rrhh' | 'jefe' | 'par') => setFormData(prev => ({ ...prev, tipo_evaluador: value }))}>
+              <Select value={formData.tipo_evaluador} onValueChange={(value) => setFormData(prev => ({ ...prev, tipo_evaluador: value || 'rrhh' }))}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
