@@ -79,7 +79,7 @@ export default function CiclosPage() {
           
           // Enriquecer ciclos con nombres de plantilla y conteo de trabajadores
           const ciclosEnriquecidos = await Promise.all(
-            ciclosData.map(async (ciclo) => {
+            ciclosData.map(async (ciclo: any) => {
               // Obtener nombre de la plantilla
               const plantilla = plantillasData.find(p => p.id === ciclo.plantilla_id)
               const plantillaNombre = plantilla?.nombre || 'Sin plantilla'
