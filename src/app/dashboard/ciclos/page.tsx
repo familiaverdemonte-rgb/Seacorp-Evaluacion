@@ -458,7 +458,7 @@ export default function CiclosPage() {
       )
     },
     {
-      key: 'trabajadores_asignados_count',
+      key: 'trabajadores_asignados',
       header: 'Trabajadores Asignados',
       sortable: true,
       render: (value: any, row: CicloEvaluacion) => (
