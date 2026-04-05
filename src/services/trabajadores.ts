@@ -141,7 +141,7 @@ export class TrabajadoresService {
 
       // Crear mapa con nombres normalizados para comparación flexible
       const areaMap = new Map<string, { id: number; nombre: string }>()
-      areas?.forEach(area => {
+      areas?.forEach((area: any) => {
         const normalizedName = normalizeText(area.nombre)
         areaMap.set(normalizedName, { id: area.id, nombre: area.nombre })
       })
@@ -155,7 +155,7 @@ export class TrabajadoresService {
 
       // Crear mapa de códigos normalizados para comparación flexible
       const codigoMap = new Map<string, { codigo: string; nombre: string }>()
-      existingTrabajadores?.forEach(trabajador => {
+      existingTrabajadores?.forEach((trabajador: any) => {
         const normalizedCodigo = normalizeText(trabajador.codigo)
         codigoMap.set(normalizedCodigo, { 
           codigo: trabajador.codigo, 
@@ -362,7 +362,7 @@ export class TrabajadoresService {
       // Eliminar duplicados y extraer datos de trabajadores
       const trabajadoresUnicos = new Map()
       
-      data?.forEach(evaluacion => {
+      data?.forEach((evaluacion: any) => {
         if (evaluacion.trabajador && !trabajadoresUnicos.has(evaluacion.trabajador_id)) {
           trabajadoresUnicos.set(evaluacion.trabajador_id, evaluacion.trabajador)
         }
