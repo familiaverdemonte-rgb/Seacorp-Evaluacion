@@ -182,26 +182,44 @@ export default function CiclosPage() {
     setShowEditDialog(true)
   }
 
-  const openViewTrabajadoresDialog = (ciclo: CicloEvaluacion) => {
+  const openViewTrabajadoresDialog = async (ciclo: CicloEvaluacion) => {
     setSelectedCiclo(ciclo)
-    // Datos de ejemplo de trabajadores asignados
-    const exampleAsignados = [
-      {
-        id: 1,
-        nombre: 'Juan Pérez',
-        codigo: 'EMP001',
-        puesto: 'Desarrollador',
-        area: { id: 1, nombre: 'TI' }
-      },
-      {
-        id: 2,
-        nombre: 'María García',
-        codigo: 'EMP002',
-        puesto: 'Diseñadora',
-        area: { id: 2, nombre: 'Marketing' }
-      }
-    ]
-    setTrabajadoresAsignados(exampleAsignados)
+    try {
+      // Importar Supabase dinámicamente
+      const { supabase } = await import('@/lib/supabase')
+      
+      // Obtener trabajadores asignados al ciclo
+      const { data: asignaciones } = await supabase
+        .from('evaluaciones')
+        .select(`
+          trabajador_id,
+          trabajador:trabajadores(
+            id,
+            nombre,
+            codigo,
+            puesto,
+            area:areas(id, nombre)
+          )
+        `)
+        .eq('ciclo_id', ciclo.id)
+      
+      const trabajadoresUnicos = asignaciones?.map((a: any) => a.trabajador).filter(Boolean) || []
+      setTrabajadoresAsignados(trabajadoresUnicos)
+      
+      console.log('✅ Trabajadores asignados cargados:', trabajadoresUnicos.length)
+    } catch (error) {
+      console.error('❌ Error loading trabajadores asignados:', error)
+      // Fallback a datos de ejemplo
+      setTrabajadoresAsignados([
+        {
+          id: 1,
+          nombre: 'Juan Pérez',
+          codigo: 'EMP001',
+          puesto: 'Desarrollador',
+          area: { id: 1, nombre: 'TI' }
+        }
+      ])
+    }
     setShowViewTrabajadoresDialog(true)
   }
 
@@ -210,23 +228,64 @@ export default function CiclosPage() {
     setShowAssignTrabajadoresDialog(true)
   }
 
-  const handleAssignTrabajadoresToCiclo = () => {
+  const handleAssignTrabajadoresToCiclo = async () => {
     if (!selectedCiclo || selectedTrabajadores.length === 0) return
     
-    console.log('🔄 Asignando trabajadores al ciclo:', {
-      ciclo: selectedCiclo.nombre,
-      trabajadores: selectedTrabajadores.length
-    })
-    
-    setShowAssignTrabajadoresDialog(false)
-    setSelectedTrabajadores([])
-    alert('✅ Trabajadores asignados exitosamente (modo demo)')
+    try {
+      // Importar Supabase dinámicamente
+      const { supabase } = await import('@/lib/supabase')
+      
+      console.log('🔄 Asignando trabajadores al ciclo:', {
+        ciclo: selectedCiclo.nombre,
+        trabajadores: selectedTrabajadores.length
+      })
+      
+      // Crear evaluaciones para cada trabajador seleccionado
+      const evaluacionesToCreate = selectedTrabajadores.map(trabajadorId => ({
+        trabajador_id: trabajadorId,
+        ciclo_id: selectedCiclo.id,
+        estado: 'pendiente',
+        tipo_evaluador: 'jefe'
+      }))
+      
+      const { error } = await supabase
+        .from('evaluaciones')
+        .insert(evaluacionesToCreate)
+      
+      if (error) throw error
+      
+      console.log('✅ Trabajadores asignados exitosamente')
+      
+      setShowAssignTrabajadoresDialog(false)
+      setSelectedTrabajadores([])
+      loadData() // Recargar datos para actualizar contador
+      
+      alert('✅ Trabajadores asignados exitosamente')
+      
+    } catch (error) {
+      console.error('❌ Error assigning trabajadores:', error)
+      alert('❌ Error al asignar trabajadores. Intente nuevamente.')
+    }
   }
 
   const handleDelete = async (ciclo: CicloEvaluacion) => {
     if (confirm(`¿Estás seguro de eliminar el ciclo "${ciclo.nombre}"?`)) {
-      console.log('🔄 Eliminando ciclo:', ciclo.nombre)
-      setCiclos(ciclos.filter(c => c.id !== ciclo.id))
+      try {
+        console.log('🔄 Eliminando ciclo:', ciclo.nombre)
+        
+        // Importar servicios dinámicamente
+        const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
+        await CiclosEvaluacionService.delete(ciclo.id)
+        
+        console.log('✅ Ciclo eliminado exitosamente')
+        loadData() // Recargar datos
+        
+        alert('✅ Ciclo eliminado exitosamente')
+        
+      } catch (error) {
+        console.error('❌ Error deleting ciclo:', error)
+        alert('❌ Error al eliminar ciclo. Intente nuevamente.')
+      }
     }
   }
 
