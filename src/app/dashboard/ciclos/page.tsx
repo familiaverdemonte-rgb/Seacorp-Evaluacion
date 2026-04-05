@@ -84,18 +84,22 @@ export default function CiclosPage() {
               const plantilla = plantillasData.find(p => p.id === ciclo.plantilla_id)
               const plantillaNombre = plantilla?.nombre || 'Sin plantilla'
               
-              // Contar trabajadores asignados a este ciclo
-              const { count } = await supabase
+              // Contar trabajadores únicos asignados a este ciclo (DISTINCT trabajador_id)
+              const { data } = await supabase
                 .from('evaluaciones')
-                .select('*', { count: 'exact', head: true })
+                .select('trabajador_id')
                 .eq('ciclo_id', ciclo.id)
               
-              console.log(`📊 Ciclo ${ciclo.nombre}: ${count} trabajadores asignados`)
+              // Obtener trabajadores únicos
+              const trabajadoresUnicos = new Set(data?.map(e => e.trabajador_id) || [])
+              const conteoTrabajadores = trabajadoresUnicos.size
+              
+              console.log(`📊 Ciclo ${ciclo.nombre}: ${conteoTrabajadores} trabajadores únicos asignados`)
               
               return {
                 ...ciclo,
                 plantilla_nombre: plantillaNombre,
-                trabajadores_asignados: count || 0
+                trabajadores_asignados: conteoTrabajadores
               }
             })
           )
@@ -216,25 +220,30 @@ export default function CiclosPage() {
       // Importar Supabase dinámicamente
       const { supabase } = await import('@/lib/supabase')
       
-      // Obtener trabajadores asignados al ciclo
+      // Obtener trabajadores únicos asignados al ciclo (DISTINCT trabajador_id)
       const { data: asignaciones } = await supabase
         .from('evaluaciones')
-        .select(`
-          trabajador_id,
-          trabajador:trabajadores(
-            id,
-            nombre,
-            codigo,
-            puesto,
-            area:areas(id, nombre)
-          )
-        `)
+        .select('trabajador_id')
         .eq('ciclo_id', ciclo.id)
       
-      const trabajadoresUnicos = asignaciones?.map((a: any) => a.trabajador).filter(Boolean) || []
-      setTrabajadoresAsignados(trabajadoresUnicos)
+      // Obtener IDs únicos de trabajadores
+      const trabajadorIdsUnicos = [...new Set(asignaciones?.map((a: any) => a.trabajador_id) || [])]
       
-      console.log('✅ Trabajadores asignados cargados:', trabajadoresUnicos.length)
+      // Obtener datos completos de los trabajadores únicos
+      const { data: trabajadoresData } = await supabase
+        .from('trabajadores')
+        .select(`
+          id,
+          nombre,
+          codigo,
+          puesto,
+          area:areas(id, nombre)
+        `)
+        .in('id', trabajadorIdsUnicos)
+      
+      setTrabajadoresAsignados(trabajadoresData || [])
+      
+      console.log('✅ Trabajadores únicos asignados cargados:', trabajadoresData?.length || 0)
     } catch (error) {
       console.error('❌ Error loading trabajadores asignados:', error)
       // Fallback a datos de ejemplo
