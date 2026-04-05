@@ -229,16 +229,29 @@ export default function CiclosPage() {
   }
 
   const handleAssignTrabajadoresToCiclo = async () => {
-    if (!selectedCiclo || selectedTrabajadores.length === 0) return
+    if (!selectedCiclo || selectedTrabajadores.length === 0) {
+      console.error('❌ Validación falló:', {
+        selectedCiclo: !!selectedCiclo,
+        selectedTrabajadores: selectedTrabajadores.length
+      })
+      alert('❌ Por favor selecciona al menos un trabajador')
+      return
+    }
     
     try {
+      console.log('🔄 Iniciando asignación de trabajadores:', {
+        ciclo: selectedCiclo.nombre,
+        ciclo_id: selectedCiclo.id,
+        trabajadores: selectedTrabajadores.length,
+        trabajadores_ids: selectedTrabajadores
+      })
+      
       // Importar Supabase dinámicamente
       const { supabase } = await import('@/lib/supabase')
       
-      console.log('🔄 Asignando trabajadores al ciclo:', {
-        ciclo: selectedCiclo.nombre,
-        trabajadores: selectedTrabajadores.length
-      })
+      if (!supabase) {
+        throw new Error('Cliente Supabase no disponible')
+      }
       
       // Crear evaluaciones para cada trabajador seleccionado
       const evaluacionesToCreate = selectedTrabajadores.map(trabajadorId => ({
@@ -248,23 +261,37 @@ export default function CiclosPage() {
         tipo_evaluador: 'jefe'
       }))
       
-      const { error } = await supabase
+      console.log('📋 Evaluaciones a crear:', evaluacionesToCreate)
+      
+      const { data, error } = await supabase
         .from('evaluaciones')
         .insert(evaluacionesToCreate)
+        .select()
       
-      if (error) throw error
+      if (error) {
+        console.error('❌ Error de Supabase:', error)
+        throw new Error(`Error de base de datos: ${error.message}`)
+      }
       
+      console.log('✅ Evaluaciones creadas:', data)
       console.log('✅ Trabajadores asignados exitosamente')
       
       setShowAssignTrabajadoresDialog(false)
       setSelectedTrabajadores([])
       loadData() // Recargar datos para actualizar contador
       
-      alert('✅ Trabajadores asignados exitosamente')
+      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados exitosamente`)
       
     } catch (error) {
-      console.error('❌ Error assigning trabajadores:', error)
-      alert('❌ Error al asignar trabajadores. Intente nuevamente.')
+      console.error('❌ Error completo al asignar trabajadores:', error)
+      console.error('🔍 Detalles del error:', {
+        message: error instanceof Error ? error.message : 'Error desconocido',
+        stack: error instanceof Error ? error.stack : 'No stack disponible',
+        selectedCiclo: selectedCiclo?.id,
+        selectedTrabajadoresCount: selectedTrabajadores.length
+      })
+      
+      alert(`❌ Error al asignar trabajadores: ${error instanceof Error ? error.message : 'Error desconocido'}`)
     }
   }
 
