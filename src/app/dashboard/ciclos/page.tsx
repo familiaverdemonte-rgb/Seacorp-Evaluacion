@@ -272,7 +272,7 @@ export default function CiclosPage() {
           ciclo_id: selectedCiclo.id,
           evaluador_id: trabajadorId, // El trabajador se evalúa a sí mismo
           estado: 'pendiente',
-          tipo_evaluador: 'auto'
+          tipo_evaluador: 'autoevaluador'
         })
         
         // Evaluación de pares (simulado - puedes ajustar la lógica)
