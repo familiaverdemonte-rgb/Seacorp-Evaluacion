@@ -199,7 +199,7 @@ export default function PlantillasPage() {
       if (ciclosConPlantilla.length > 0) {
         console.log('⚠️ Plantilla en uso detectada:', ciclosConPlantilla)
         
-        const nombresCiclos = ciclosConPlantilla.map(c => c.nombre).join(', ')
+        const nombresCiclos = ciclosConPlantilla.map((c: any) => c.nombre).join(', ')
         const mensaje = `❌ No se puede eliminar la plantilla "${plantilla.nombre}"\n\n` +
                        `📋 Está siendo usada en ${ciclosConPlantilla.length} ciclo(s):\n` +
                        `🔄 ${nombresCiclos}\n\n` +
