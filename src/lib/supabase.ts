@@ -4,15 +4,34 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Validar que las variables de entorno estén configuradas
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Faltan las variables de entorno de Supabase. ' +
-    'Asegúrate de tener NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en tu archivo .env.local'
-  )
+// Debug: Mostrar variables en Vercel (solo en desarrollo)
+if (typeof window !== 'undefined') {
+  console.log('🔍 Supabase Config Debug:', {
+    url: supabaseUrl ? '✅ Configurada' : '❌ No configurada',
+    key: supabaseAnonKey ? '✅ Configurada' : '❌ No configurada',
+    env: process.env.NODE_ENV
+  })
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Validación robusta con fallback para Vercel
+let client: any = null
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('❌ Variables de Supabase no configuradas en Vercel')
+  console.error('Verifica las variables de entorno en el dashboard de Vercel')
+  
+  // No lanzar error en producción para que la página no se rompa
+  if (process.env.NODE_ENV === 'development') {
+    throw new Error(
+      'Faltan las variables de entorno de Supabase. ' +
+      'Asegúrate de tener NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en tu archivo .env.local'
+    )
+  }
+} else {
+  client = createClient(supabaseUrl, supabaseAnonKey)
+}
+
+export const supabase = client
 
 export type Database = {
   public: {

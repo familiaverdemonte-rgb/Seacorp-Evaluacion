@@ -47,11 +47,36 @@ export default function CiclosPage() {
   const loadData = async () => {
     try {
       setLoading(true)
+      
+      // Debug: Verificar conexión a Supabase
+      console.log('🔍 Iniciando carga de datos...')
+      console.log('🔍 Supabase client disponible:', !!supabase)
+      
+      if (!supabase) {
+        throw new Error('Cliente Supabase no disponible')
+      }
+      
       const [ciclosData, plantillasData, trabajadoresData] = await Promise.all([
-        CiclosEvaluacionService.getAll().catch(() => []),
-        PlantillasService.getAll().catch(() => []),
-        TrabajadoresService.getAll().catch(() => [])
+        CiclosEvaluacionService.getAll().catch(err => {
+          console.error('❌ Error cargando ciclos:', err)
+          return []
+        }),
+        PlantillasService.getAll().catch(err => {
+          console.error('❌ Error cargando plantillas:', err)
+          return []
+        }),
+        TrabajadoresService.getAll().catch(err => {
+          console.error('❌ Error cargando trabajadores:', err)
+          return []
+        })
       ])
+      
+      console.log('✅ Datos cargados:', {
+        ciclos: ciclosData.length,
+        plantillas: plantillasData.length,
+        trabajadores: trabajadoresData.length
+      })
+      
       setCiclos(ciclosData)
       setPlantillas(plantillasData)
       setTrabajadores(trabajadoresData)
@@ -63,9 +88,11 @@ export default function CiclosPage() {
           .filter(Boolean)
       )).map(nombre => ({ id: 0, nombre }))
       setAreas(uniqueAreas)
+      
     } catch (error) {
-      console.error('Error loading data:', error)
+      console.error('❌ Error general en loadData:', error)
       // Fallback a datos de ejemplo si hay error de conexión
+      console.log('🔄 Usando fallback a datos de ejemplo...')
       setCiclos([
         {
           id: 1,
@@ -75,13 +102,29 @@ export default function CiclosPage() {
           fecha_fin: '2024-06-30',
           trabajadores_asignados: 15,
           plantilla_nombre: 'Plantilla Corporativa'
+        },
+        {
+          id: 2,
+          nombre: 'Evaluación 2024 - Segundo Semestre',
+          estado: 'abierto' as const,
+          fecha_inicio: '2024-07-01',
+          fecha_fin: '2024-12-31',
+          trabajadores_asignados: 20,
+          plantilla_nombre: 'Plantilla Senior'
         }
       ])
       setPlantillas([
-        { id: 1, nombre: 'Plantilla Corporativa' }
+        { id: 1, nombre: 'Plantilla Corporativa' },
+        { id: 2, nombre: 'Plantilla Senior' }
       ])
-      setTrabajadores([])
-      setAreas([])
+      setTrabajadores([
+        { id: 1, nombre: 'Juan Pérez', codigo: 'EMP001', puesto: 'Desarrollador', area: { id: 1, nombre: 'TI' } },
+        { id: 2, nombre: 'María García', codigo: 'EMP002', puesto: 'Diseñadora', area: { id: 2, nombre: 'Marketing' } }
+      ])
+      setAreas([
+        { id: 1, nombre: 'TI' },
+        { id: 2, nombre: 'Marketing' }
+      ])
     } finally {
       setLoading(false)
     }
