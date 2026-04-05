@@ -54,12 +54,16 @@ export default function CiclosPage() {
       // Intentar cargar datos reales primero
       if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
         console.log('✅ Variables detectadas, intentando conexión real...')
+        console.log('🔗 URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+        console.log('🔑 KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...')
         
         try {
           // Importar servicios dinámicamente
           const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
           const { PlantillasService } = await import('@/services/plantillas')
           const { TrabajadoresService } = await import('@/services/trabajadores')
+          
+          console.log('📦 Servicios importados, intentando cargar datos...')
           
           const [ciclosData, plantillasData, trabajadoresData] = await Promise.all([
             CiclosEvaluacionService.getAll().catch(err => {
@@ -75,6 +79,15 @@ export default function CiclosPage() {
               return []
             })
           ])
+          
+          console.log('📊 Resultados parciales:', {
+            ciclos: ciclosData.length,
+            plantillas: plantillasData.length,
+            trabajadores: trabajadoresData.length,
+            ciclosError: ciclosData.length === 0 ? 'Posible error' : 'OK',
+            plantillasError: plantillasData.length === 0 ? 'Posible error' : 'OK',
+            trabajadoresError: trabajadoresData.length === 0 ? 'Posible error' : 'OK'
+          })
           
           if (ciclosData.length > 0 || plantillasData.length > 0 || trabajadoresData.length > 0) {
             console.log('✅ Datos reales cargados:', {
@@ -96,10 +109,22 @@ export default function CiclosPage() {
             setAreas(uniqueAreas)
             
             return // Salir si cargó datos reales
+          } else {
+            console.error('⚠️ Todos los servicios retornaron arrays vacíos - posible error de conexión o permisos')
           }
         } catch (error) {
           console.error('❌ Error cargando datos reales:', error)
+          console.error('🔍 Detalles del error:', {
+            message: error instanceof Error ? error.message : 'Error desconocido',
+            stack: error instanceof Error ? error.stack : 'No stack disponible'
+          })
         }
+      } else {
+        console.error('❌ Variables de entorno no detectadas')
+        console.error('🔍 Variables actuales:', {
+          URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Presente' : 'Ausente',
+          KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Presente' : 'Ausente'
+        })
       }
       
       // Fallback a datos de ejemplo si no hay variables o falla la conexión
