@@ -394,7 +394,7 @@ export default function CiclosPage() {
             </div>
             <div>
               <Label htmlFor="plantilla">Plantilla</Label>
-              <Select value={formData.plantilla_id} onValueChange={(value) => setFormData({ ...formData, plantilla_id: value })}>
+              <Select value={formData.plantilla_id} onValueChange={(value) => setFormData({ ...formData, plantilla_id: value || '' })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona una plantilla" />
                 </SelectTrigger>
@@ -457,7 +457,7 @@ export default function CiclosPage() {
             </div>
             <div>
               <Label htmlFor="edit-plantilla">Plantilla</Label>
-              <Select value={formData.plantilla_id} onValueChange={(value) => setFormData({ ...formData, plantilla_id: value })}>
+              <Select value={formData.plantilla_id} onValueChange={(value) => setFormData({ ...formData, plantilla_id: value || '' })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona una plantilla" />
                 </SelectTrigger>
