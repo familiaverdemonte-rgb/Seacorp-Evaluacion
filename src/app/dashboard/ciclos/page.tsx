@@ -228,17 +228,17 @@ export default function CiclosPage() {
   const columns: Column<CicloEvaluacion>[] = [
     {
       key: 'id',
-      title: 'ID',
+      header: 'ID',
       sortable: true
     },
     {
       key: 'nombre',
-      title: 'Nombre del Ciclo',
+      header: 'Nombre del Ciclo',
       sortable: true
     },
     {
       key: 'estado',
-      title: 'Estado',
+      header: 'Estado',
       sortable: true,
       render: (value: string) => (
         <Badge
@@ -265,17 +265,17 @@ export default function CiclosPage() {
     },
     {
       key: 'plantilla_nombre',
-      title: 'Plantilla',
+      header: 'Plantilla',
       sortable: true
     },
     {
       key: 'trabajadores_asignados',
-      title: 'Trabajadores Asignados',
+      header: 'Trabajadores Asignados',
       sortable: true
     },
     {
       key: 'id',
-      title: 'Acciones',
+      header: 'Acciones',
       render: (_: any, row: CicloEvaluacion) => (
         <div className="flex space-x-2">
           <Button
