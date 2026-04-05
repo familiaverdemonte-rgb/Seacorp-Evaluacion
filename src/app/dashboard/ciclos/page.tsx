@@ -48,13 +48,34 @@ export default function CiclosPage() {
     try {
       setLoading(true)
       
-      // Debug: Verificar conexión a Supabase
+      // Debug: Verificar configuración de Supabase
       console.log('🔍 Iniciando carga de datos...')
-      console.log('🔍 Supabase client disponible:', !!supabase)
+      console.log('🔍 Variables de entorno:', {
+        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅' : '❌',
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅' : '❌',
+        NODE_ENV: process.env.NODE_ENV
+      })
       
       if (!supabase) {
-        console.error('❌ Cliente Supabase no disponible, usando fallback')
+        console.error('❌ Cliente Supabase no disponible')
+        console.error('🔧 SOLUCIÓN: Configurar variables en Vercel Dashboard')
+        console.error('📋 Variables necesarias:')
+        console.error('   - NEXT_PUBLIC_SUPABASE_URL')
+        console.error('   - NEXT_PUBLIC_SUPABASE_ANON_KEY')
         throw new Error('Cliente Supabase no disponible')
+      }
+      
+      console.log('✅ Intentando conexión directa a Supabase...')
+      
+      // Probar conexión simple
+      const { data: testData, error: testError } = await supabase
+        .from('areas')
+        .select('count')
+        .limit(1)
+      
+      if (testError) {
+        console.error('❌ Error de conexión a Supabase:', testError)
+        throw new Error(`Error de conexión: ${testError.message}`)
       }
       
       console.log('✅ Conexión a Supabase OK, cargando datos...')
