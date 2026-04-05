@@ -414,6 +414,15 @@ export default function CiclosPage() {
     }
   }
 
+  const handleSelectAllTrabajadores = () => {
+    const filteredIds = filteredTrabajadores.map(t => t.id)
+    setSelectedTrabajadores(filteredIds)
+  }
+
+  const handleDeselectAllTrabajadores = () => {
+    setSelectedTrabajadores([])
+  }
+
   const handleSearchTrabajadores = (query: string) => {
     setSearchQuery(query)
   }
@@ -735,6 +744,28 @@ export default function CiclosPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">Seleccionar Trabajadores</h3>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSelectAllTrabajadores}
+                  disabled={filteredTrabajadores.length === 0}
+                >
+                  Seleccionar Todos ({filteredTrabajadores.length})
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDeselectAllTrabajadores}
+                  disabled={selectedTrabajadores.length === 0}
+                >
+                  Deseleccionar Todos ({selectedTrabajadores.length})
+                </Button>
+              </div>
+            </div>
+            
             <div className="flex space-x-4">
               <div className="flex-1">
                 <Label htmlFor="search">Buscar Trabajadores</Label>
