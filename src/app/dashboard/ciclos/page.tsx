@@ -15,6 +15,7 @@ import { Column } from '@/components/ui/data-table'
 import { CiclosEvaluacionService } from '@/services/ciclos-evaluacion'
 import { PlantillasService } from '@/services/plantillas'
 import { TrabajadoresService } from '@/services/trabajadores'
+import { supabase } from '@/lib/supabase'
 
 export default function CiclosPage() {
   const [ciclos, setCiclos] = useState<CicloEvaluacion[]>([])
@@ -140,8 +141,23 @@ export default function CiclosPage() {
   const openViewTrabajadoresDialog = async (ciclo: CicloEvaluacion) => {
     setSelectedCiclo(ciclo)
     try {
-      const asignados = await CiclosEvaluacionService.getTrabajadoresAsignados(ciclo.id)
-      setTrabajadoresAsignados(asignados)
+      // Obtener trabajadores asignados al ciclo
+      const { data: asignaciones } = await supabase
+        .from('evaluaciones')
+        .select(`
+          trabajador_id,
+          trabajador:trabajadores(
+            id,
+            nombre,
+            codigo,
+            puesto,
+            area:areas(id, nombre)
+          )
+        `)
+        .eq('ciclo_id', ciclo.id)
+      
+      const trabajadoresUnicos = asignaciones?.map((a: any) => a.trabajador).filter(Boolean) || []
+      setTrabajadoresAsignados(trabajadoresUnicos)
     } catch (error) {
       console.error('Error loading trabajadores asignados:', error)
       setTrabajadoresAsignados([])
@@ -158,7 +174,20 @@ export default function CiclosPage() {
     if (!selectedCiclo || selectedTrabajadores.length === 0) return
     
     try {
-      await CiclosEvaluacionService.assignTrabajadores(selectedCiclo.id, selectedTrabajadores)
+      // Crear evaluaciones para cada trabajador seleccionado
+      const evaluacionesToCreate = selectedTrabajadores.map(trabajadorId => ({
+        trabajador_id: trabajadorId,
+        ciclo_id: selectedCiclo.id,
+        estado: 'pendiente',
+        tipo_evaluador: 'jefe'
+      }))
+      
+      const { error } = await supabase
+        .from('evaluaciones')
+        .insert(evaluacionesToCreate)
+      
+      if (error) throw error
+      
       setShowAssignTrabajadoresDialog(false)
       setSelectedTrabajadores([])
       loadData()
