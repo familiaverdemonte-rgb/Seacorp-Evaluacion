@@ -442,7 +442,7 @@ export default function CiclosPage() {
       render: (value: any, row: CicloEvaluacion) => (
         <div className="flex items-center gap-2">
           <FileText className="h-4 w-4 text-purple-500" />
-          <span className="font-medium">{row.plantilla?.nombre || 'Plantilla por Defecto'}</span>
+          <span className="font-medium">{row.plantilla_nombre || 'Plantilla por Defecto'}</span>
         </div>
       )
     },
