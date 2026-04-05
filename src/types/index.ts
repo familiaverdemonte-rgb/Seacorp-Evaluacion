@@ -20,6 +20,9 @@ export interface CicloEvaluacion {
   fecha_inicio: string
   fecha_fin: string
   estado: 'abierto' | 'cerrado'
+  plantilla_id?: number
+  trabajadores_asignados?: number
+  plantilla_nombre?: string
 }
 
 export interface Plantilla {
@@ -42,8 +45,7 @@ export interface Pregunta {
   tipo: 'escala_1_5'
   peso: number
   es_general: boolean
-  area_id: number | null
-  area?: Area
+  // area_id eliminado - no existe en la BD
 }
 
 export interface Evaluacion {
@@ -88,11 +90,24 @@ export interface PesoEvaluador {
   par: number
 }
 
-export interface ClasificacionDesempeño {
+export interface ClasificacionDesempeno {
   rango: string
   min: number
   max: number
   etiqueta: string
+}
+
+export const CLASIFICACION_DESEMPENO: ClasificacionDesempeno[] = [
+  { rango: 'alto', min: 4.5, max: 5, etiqueta: 'Alto desempeño' },
+  { rango: 'bueno', min: 3.5, max: 4.49, etiqueta: 'Buen desempeño' },
+  { rango: 'regular', min: 2.5, max: 3.49, etiqueta: 'Desempeño regular' },
+  { rango: 'bajo', min: 0, max: 2.49, etiqueta: 'Bajo desempeño' }
+]
+
+export const PESOS_EVALUADOR: PesoEvaluador = {
+  rrhh: 0.4,
+  jefe: 0.4,
+  par: 0.2
 }
 
 export interface DashboardStats {

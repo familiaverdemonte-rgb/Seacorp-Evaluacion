@@ -1,4 +1,4 @@
-import { PesoEvaluador, ClasificacionDesempeño } from '@/types'
+import { PesoEvaluador, ClasificacionDesempeno } from '@/types'
 
 export const PESOS_EVALUADOR: PesoEvaluador = {
   rrhh: 0.4,
@@ -6,7 +6,7 @@ export const PESOS_EVALUADOR: PesoEvaluador = {
   par: 0.2
 }
 
-export const CLASIFICACION_DESEMPENO: ClasificacionDesempeño[] = [
+export const CLASIFICACION_DESEMPENO: ClasificacionDesempeno[] = [
   { rango: 'alto', min: 4.5, max: 5, etiqueta: 'Alto desempeño' },
   { rango: 'bueno', min: 3.5, max: 4.49, etiqueta: 'Buen desempeño' },
   { rango: 'regular', min: 2.5, max: 3.49, etiqueta: 'Desempeño regular' },

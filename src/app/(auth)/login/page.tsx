@@ -2,12 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2 } from 'lucide-react'
+import { AuthService, LoginCredentials } from '@/services/auth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -16,21 +18,17 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      // TODO: Implementar autenticación con Supabase
-      console.log('Login attempt:', { email, password })
-      
-      // Simulación de login exitoso
-      setTimeout(() => {
-        router.push('/dashboard')
-      }, 1000)
+      const credentials: LoginCredentials = { email, password }
+      await AuthService.signIn(credentials)
+      router.push('/dashboard')
     } catch (err) {
-      setError('Error al iniciar sesión. Verifique sus credenciales.')
+      setError(err instanceof Error ? err.message : 'Error al iniciar sesión')
     } finally {
       setLoading(false)
     }
@@ -58,6 +56,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="space-y-2">
@@ -68,6 +67,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             {error && (
@@ -86,6 +86,11 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+          <div className="mt-4 text-center text-sm">
+            <Link href="/login/reset-password" className="text-blue-600 hover:underline">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>

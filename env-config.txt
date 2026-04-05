@@ -1,0 +1,10 @@
+# CONFIGURACIÓN DE ENTORNO PARA SEACORP EVALUACIÓN
+# Copia este contenido a tu archivo .env.local
+
+# Configuración de Supabase
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase_aqui
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_de_supabase_aqui
+
+# Para pruebas locales sin Supabase, puedes usar valores demo:
+NEXT_PUBLIC_SUPABASE_URL=https://demo-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=demo-key-for-testing-only

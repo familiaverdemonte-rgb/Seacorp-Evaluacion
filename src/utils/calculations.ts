@@ -1,4 +1,17 @@
-import { Evaluacion, Respuesta, Pregunta, Seccion, CLASIFICACION_DESEMPENO, PESOS_EVALUADOR } from '@/types'
+import { Evaluacion, Respuesta, Pregunta, Seccion } from '@/types'
+
+const CLASIFICACION_DESEMPENO = [
+  { rango: 'alto', min: 4.5, max: 5, etiqueta: 'Alto desempeño' },
+  { rango: 'bueno', min: 3.5, max: 4.49, etiqueta: 'Buen desempeño' },
+  { rango: 'regular', min: 2.5, max: 3.49, etiqueta: 'Desempeño regular' },
+  { rango: 'bajo', min: 0, max: 2.49, etiqueta: 'Bajo desempeño' }
+]
+
+const PESOS_EVALUADOR = {
+  rrhh: 0.4,
+  jefe: 0.4,
+  par: 0.2
+}
 
 export function calcularPuntajePonderado(
   respuestas: (Respuesta & { pregunta: Pregunta })[],
@@ -45,7 +58,7 @@ export function calcularPuntajePonderado(
 
 export function clasificarDesempeño(puntaje: number): string {
   const clasificacion = CLASIFICACION_DESEMPENO.find(
-    rango => puntaje >= rango.min && puntaje <= rango.max
+    (rango: any) => puntaje >= rango.min && puntaje <= rango.max
   )
   return clasificacion?.etiqueta || 'Sin clasificación'
 }
@@ -73,12 +86,33 @@ export function calcularPuntajeFinal360(
     par: promedioArray(puntajesPorTipo.par)
   }
 
-  // Aplicar pesos 360°
-  return (
-    (promedioPorTipo.rrhh * PESOS_EVALUADOR.rrhh) +
-    (promedioPorTipo.jefe * PESOS_EVALUADOR.jefe) +
-    (promedioPorTipo.par * PESOS_EVALUADOR.par)
-  )
+  // Contar cuántos tipos de evaluadores tienen datos
+  const tiposConDatos = [
+    promedioPorTipo.rrhh > 0 ? 1 : 0,
+    promedioPorTipo.jefe > 0 ? 1 : 0,
+    promedioPorTipo.par > 0 ? 1 : 0
+  ].reduce((sum, count) => sum + count, 0)
+
+  console.log('🔍 Tipos con datos:', tiposConDatos, 'Promedios:', promedioPorTipo)
+
+  // Si solo hay un tipo de evaluador, usar su valor directamente
+  if (tiposConDatos === 1) {
+    if (promedioPorTipo.par > 0) return promedioPorTipo.par
+    if (promedioPorTipo.rrhh > 0) return promedioPorTipo.rrhh
+    if (promedioPorTipo.jefe > 0) return promedioPorTipo.jefe
+  }
+
+  // Si hay dos o más tipos, usar pesos 360°
+  if (tiposConDatos >= 2) {
+    return (
+      (promedioPorTipo.rrhh * PESOS_EVALUADOR.rrhh) +
+      (promedioPorTipo.jefe * PESOS_EVALUADOR.jefe) +
+      (promedioPorTipo.par * PESOS_EVALUADOR.par)
+    )
+  }
+
+  // Si no hay datos, retornar 0
+  return 0
 }
 
 function promedioArray(arr: number[]): number {

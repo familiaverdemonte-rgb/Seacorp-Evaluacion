@@ -1,7 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Configuración de Supabase desde variables de entorno
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+// Validar que las variables de entorno estén configuradas
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Faltan las variables de entorno de Supabase. ' +
+    'Asegúrate de tener NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en tu archivo .env.local'
+  )
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
@@ -58,6 +67,7 @@ export type Database = {
           fecha_inicio: string
           fecha_fin: string
           estado: 'abierto' | 'cerrado'
+          plantilla_id: number | null
         }
         Insert: {
           id?: number
@@ -65,6 +75,7 @@ export type Database = {
           fecha_inicio: string
           fecha_fin: string
           estado?: 'abierto' | 'cerrado'
+          plantilla_id?: number | null
         }
         Update: {
           id?: number
@@ -72,6 +83,7 @@ export type Database = {
           fecha_inicio?: string
           fecha_fin?: string
           estado?: 'abierto' | 'cerrado'
+          plantilla_id?: number | null
         }
       }
       plantillas: {
