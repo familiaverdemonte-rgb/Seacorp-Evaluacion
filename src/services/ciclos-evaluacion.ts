@@ -20,7 +20,7 @@ export class CiclosEvaluacionService {
     if (error) throw error
     
     // Contar trabajadores únicos por ciclo
-    const ciclosConConteo = (data || []).map(ciclo => {
+    const ciclosConConteo = (data || []).map((ciclo: any) => {
       const trabajadoresUnicos = new Set(
         ciclo.trabajadores_asignados?.map((evaluacion: any) => evaluacion.trabajador_id) || []
       )
