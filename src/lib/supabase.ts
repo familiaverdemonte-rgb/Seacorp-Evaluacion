@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-// Debug: Mostrar variables en Vercel (solo en desarrollo)
+// Debug: Mostrar variables en Vercel
 if (typeof window !== 'undefined') {
   console.log('🔍 Supabase Config Debug:', {
     url: supabaseUrl ? '✅ Configurada' : '❌ No configurada',
@@ -32,6 +32,29 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = client
+
+// Función para verificar conexión
+export const checkSupabaseConnection = async () => {
+  try {
+    if (!supabase) {
+      return { connected: false, error: 'Cliente Supabase no inicializado' }
+    }
+    
+    const { data, error } = await supabase
+      .from('areas')
+      .select('count')
+      .limit(1)
+      .single()
+    
+    if (error) {
+      return { connected: false, error: error.message }
+    }
+    
+    return { connected: true, data }
+  } catch (err) {
+    return { connected: false, error: err instanceof Error ? err.message : 'Error desconocido' }
+  }
+}
 
 export type Database = {
   public: {
