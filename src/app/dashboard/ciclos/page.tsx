@@ -179,7 +179,7 @@ export default function CiclosPage() {
       )
     },
     {
-      key: 'actions',
+      key: 'id',
       header: 'Acciones',
       render: (value: any, row: CicloEvaluacion) => (
         <div className="flex space-x-2">
