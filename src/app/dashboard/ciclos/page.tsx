@@ -91,7 +91,7 @@ export default function CiclosPage() {
                 .eq('ciclo_id', ciclo.id)
               
               // Obtener trabajadores únicos
-              const trabajadoresUnicos = new Set(data?.map(e => e.trabajador_id) || [])
+              const trabajadoresUnicos = new Set(data?.map((e: any) => e.trabajador_id) || [])
               const conteoTrabajadores = trabajadoresUnicos.size
               
               console.log(`📊 Ciclo ${ciclo.nombre}: ${conteoTrabajadores} trabajadores únicos asignados`)
