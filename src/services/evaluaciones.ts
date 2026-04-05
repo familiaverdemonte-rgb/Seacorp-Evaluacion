@@ -93,21 +93,7 @@ export class EvaluacionesService {
     return data || []
   }
 
-  static async getByTrabajador(trabajadorId: number): Promise<EvaluacionConDetalles[]> {
-    const { data, error } = await supabase
-      .from('evaluaciones')
-      .select(`
-        *,
-        trabajador:trabajadores(*),
-        ciclo:ciclos_evaluacion(*)
-      `)
-      .eq('trabajador_id', trabajadorId)
-      .order('created_at', { ascending: false })
-
-    if (error) throw new Error(error.message)
-    return data || []
-  }
-
+  
   static async create(evaluacion: Omit<Evaluacion, 'id' | 'created_at'>): Promise<Evaluacion> {
     const { data, error } = await supabase
       .from('evaluaciones')
@@ -143,15 +129,7 @@ export class EvaluacionesService {
     return this.update(id, { estado })
   }
 
-  static async delete(id: number): Promise<void> {
-    const { error } = await supabase
-      .from('evaluaciones')
-      .delete()
-      .eq('id', id)
-
-    if (error) throw new Error(error.message)
-  }
-
+  
   static async createRespuesta(respuesta: Omit<Respuesta, 'id'>): Promise<Respuesta> {
     const { data, error } = await supabase
       .from('respuestas')
@@ -450,16 +428,6 @@ export class EvaluacionesService {
       promedioGeneral,
       distribucionDesempeno
     }
-  }
-
-  static async getByCiclo(cicloId: number): Promise<Evaluacion[]> {
-    const { data, error } = await supabase
-      .from('evaluaciones')
-      .select('*')
-      .eq('ciclo_id', cicloId)
-
-    if (error) throw new Error(error.message)
-    return data || []
   }
 
   static async actualizarPlantillaDeEvaluaciones(cicloId: number, nuevaPlantillaId: number): Promise<void> {
