@@ -61,6 +61,7 @@ export default function CiclosPage() {
           const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
           const { PlantillasService } = await import('@/services/plantillas')
           const { TrabajadoresService } = await import('@/services/trabajadores')
+          const { supabase } = await import('@/lib/supabase')
           
           console.log('📦 Servicios importados, cargando datos reales...')
           
@@ -70,13 +71,38 @@ export default function CiclosPage() {
             TrabajadoresService.getAll()
           ])
           
-          console.log('✅ Datos reales cargados exitosamente:', {
+          console.log('✅ Datos base cargados:', {
             ciclos: ciclosData.length,
             plantillas: plantillasData.length,
             trabajadores: trabajadoresData.length
           })
           
-          setCiclos(ciclosData)
+          // Enriquecer ciclos con nombres de plantilla y conteo de trabajadores
+          const ciclosEnriquecidos = await Promise.all(
+            ciclosData.map(async (ciclo) => {
+              // Obtener nombre de la plantilla
+              const plantilla = plantillasData.find(p => p.id === ciclo.plantilla_id)
+              const plantillaNombre = plantilla?.nombre || 'Sin plantilla'
+              
+              // Contar trabajadores asignados a este ciclo
+              const { count } = await supabase
+                .from('evaluaciones')
+                .select('*', { count: 'exact', head: true })
+                .eq('ciclo_id', ciclo.id)
+              
+              console.log(`📊 Ciclo ${ciclo.nombre}: ${count} trabajadores asignados`)
+              
+              return {
+                ...ciclo,
+                plantilla_nombre: plantillaNombre,
+                trabajadores_asignados: count || 0
+              }
+            })
+          )
+          
+          console.log('✅ Ciclos enriquecidos:', ciclosEnriquecidos)
+          
+          setCiclos(ciclosEnriquecidos)
           setPlantillas(plantillasData)
           setTrabajadores(trabajadoresData)
           
@@ -118,8 +144,9 @@ export default function CiclosPage() {
           estado: 'abierto' as const,
           fecha_inicio: '2024-01-01',
           fecha_fin: '2024-06-30',
-          trabajadores_asignados: 15,
-          plantilla_nombre: 'Plantilla Corporativa'
+          plantilla_id: 1,
+          plantilla_nombre: 'Plantilla Corporativa',
+          trabajadores_asignados: 15
         },
         {
           id: 2,
@@ -127,8 +154,9 @@ export default function CiclosPage() {
           estado: 'abierto' as const,
           fecha_inicio: '2024-07-01',
           fecha_fin: '2024-12-31',
-          trabajadores_asignados: 20,
-          plantilla_nombre: 'Plantilla Senior'
+          plantilla_id: 2,
+          plantilla_nombre: 'Plantilla Senior',
+          trabajadores_asignados: 20
         }
       ]
       
