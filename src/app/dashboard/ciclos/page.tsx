@@ -257,6 +257,7 @@ export default function CiclosPage() {
       const evaluacionesToCreate = selectedTrabajadores.map(trabajadorId => ({
         trabajador_id: trabajadorId,
         ciclo_id: selectedCiclo.id,
+        evaluador_id: 1, // ID del evaluador (ajustar según tu sistema)
         estado: 'pendiente',
         tipo_evaluador: 'jefe'
       }))
