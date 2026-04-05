@@ -1,6 +1,8 @@
 export interface Area {
   id: number
   nombre: string
+  trabajadores_count?: number
+  puestos?: string[]
 }
 
 export interface Trabajador {
@@ -12,6 +14,7 @@ export interface Trabajador {
   residencia: string
   service: string
   area?: Area
+  evaluaciones?: number
 }
 
 export interface CicloEvaluacion {
@@ -23,6 +26,10 @@ export interface CicloEvaluacion {
   plantilla_id?: number
   trabajadores_asignados?: number
   plantilla_nombre?: string
+  plantilla?: {
+    id: number
+    nombre: string
+  }
 }
 
 export interface Plantilla {

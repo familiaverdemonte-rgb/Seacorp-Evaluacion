@@ -437,7 +437,7 @@ export default function EvaluacionesPage() {
               </CardDescription>
             </div>
             <div className="flex items-center space-x-2">
-              <Select value={filtroEstado} onValueChange={setFiltroEstado}>
+              <Select value={filtroEstado} onValueChange={(value) => setFiltroEstado(value || '')}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Todos los estados" />
                 </SelectTrigger>
@@ -448,7 +448,7 @@ export default function EvaluacionesPage() {
                   <SelectItem value="completada">Completada</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={filtroTipoEvaluador} onValueChange={setFiltroTipoEvaluador}>
+              <Select value={filtroTipoEvaluador} onValueChange={(value) => setFiltroTipoEvaluador(value || '')}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Todos los tipos" />
                 </SelectTrigger>

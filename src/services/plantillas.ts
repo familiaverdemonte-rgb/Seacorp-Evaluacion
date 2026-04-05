@@ -217,8 +217,7 @@ export class PlantillasService {
               texto: pregunta.texto,
               tipo: pregunta.tipo,
               peso: pregunta.peso,
-              es_general: pregunta.es_general,
-              area_id: pregunta.area_id
+              es_general: pregunta.es_general
             })
           })
         )

@@ -503,7 +503,7 @@ export default function TrabajadoresPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="area">Área</Label>
-                    <Select value={formData.area_id} onValueChange={(value) => setFormData({ ...formData, area_id: value })}>
+                    <Select value={formData.area_id || ''} onValueChange={(value) => setFormData({ ...formData, area_id: value || '' })}>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona un área" />
                       </SelectTrigger>
@@ -601,7 +601,7 @@ export default function TrabajadoresPage() {
                   className="pl-10 w-64"
                 />
               </div>
-              <Select value={filtroArea} onValueChange={setFiltroArea}>
+              <Select value={filtroArea} onValueChange={(value) => setFiltroArea(value || '')}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Todas las áreas" />
                 </SelectTrigger>
@@ -614,7 +614,7 @@ export default function TrabajadoresPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Select value={filtroPuesto} onValueChange={setFiltroPuesto}>
+              <Select value={filtroPuesto} onValueChange={(value) => setFiltroPuesto(value || '')}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder={filtroArea ? "Puestos del área" : "Todos los puestos"} />
                 </SelectTrigger>

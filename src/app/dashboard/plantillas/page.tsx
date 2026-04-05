@@ -122,7 +122,7 @@ export default function PlantillasPage() {
       }
       
       for (const seccion of seccionesCreadas) {
-        const preguntas = preguntasExistentes[seccion.nombre] || []
+        const preguntas = (preguntasExistentes as any)[seccion.nombre] || []
         for (const preguntaData of preguntas) {
           const pregunta = await PreguntasService.create({
             seccion_id: seccion.id,
@@ -1027,8 +1027,8 @@ export default function PlantillasPage() {
                                 <div className="flex gap-4 mt-2">
                                   <Badge variant="outline">Peso: {pregunta.peso}</Badge>
                                   <Badge variant="outline">Escala 1-5</Badge>
-                                  {pregunta.area && (
-                                    <Badge variant="outline">{pregunta.area.nombre}</Badge>
+                                  {(pregunta as any).area && (
+                                    <Badge variant="outline">{(pregunta as any).area.nombre}</Badge>
                                   )}
                                 </div>
                               </div>
@@ -1042,7 +1042,7 @@ export default function PlantillasPage() {
                                       ...prev, 
                                       preguntaTexto: pregunta.texto, 
                                       preguntaPeso: pregunta.peso,
-                                      preguntaArea: pregunta.area?.id || ''
+                                      preguntaArea: (pregunta as any).area?.id || ''
                                     }))
                                     setSelectedSeccion(seccion)
                                     setShowPreguntaDialog(true)
