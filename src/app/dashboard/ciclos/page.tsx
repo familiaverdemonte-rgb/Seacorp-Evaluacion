@@ -253,14 +253,37 @@ export default function CiclosPage() {
         throw new Error('Cliente Supabase no disponible')
       }
       
-      // Crear evaluaciones para cada trabajador seleccionado
-      const evaluacionesToCreate = selectedTrabajadores.map(trabajadorId => ({
-        trabajador_id: trabajadorId,
-        ciclo_id: selectedCiclo.id,
-        evaluador_id: 1, // ID del evaluador (ajustar según tu sistema)
-        estado: 'pendiente',
-        tipo_evaluador: 'jefe'
-      }))
+      // Crear evaluaciones para cada trabajador seleccionado (3 tipos)
+      const evaluacionesToCreate: any[] = []
+      
+      selectedTrabajadores.forEach(trabajadorId => {
+        // Evaluación del jefe
+        evaluacionesToCreate.push({
+          trabajador_id: trabajadorId,
+          ciclo_id: selectedCiclo.id,
+          evaluador_id: 1, // ID del evaluador jefe
+          estado: 'pendiente',
+          tipo_evaluador: 'jefe'
+        })
+        
+        // Autoevaluación
+        evaluacionesToCreate.push({
+          trabajador_id: trabajadorId,
+          ciclo_id: selectedCiclo.id,
+          evaluador_id: trabajadorId, // El trabajador se evalúa a sí mismo
+          estado: 'pendiente',
+          tipo_evaluador: 'autoevaluacion'
+        })
+        
+        // Evaluación de pares (simulado - puedes ajustar la lógica)
+        evaluacionesToCreate.push({
+          trabajador_id: trabajadorId,
+          ciclo_id: selectedCiclo.id,
+          evaluador_id: 1, // Puedes ajustar esto para seleccionar un par real
+          estado: 'pendiente',
+          tipo_evaluador: 'par'
+        })
+      })
       
       console.log('📋 Evaluaciones a crear:', evaluacionesToCreate)
       
@@ -281,7 +304,7 @@ export default function CiclosPage() {
       setSelectedTrabajadores([])
       loadData() // Recargar datos para actualizar contador
       
-      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados exitosamente`)
+      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados con ${selectedTrabajadores.length * 3} evaluaciones (jefe, autoevaluación, pares)`)
       
     } catch (error) {
       console.error('❌ Error completo al asignar trabajadores:', error)
