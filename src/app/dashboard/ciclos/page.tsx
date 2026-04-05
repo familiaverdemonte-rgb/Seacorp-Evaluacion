@@ -818,14 +818,6 @@ export default function CiclosPage() {
           </div>
         </DialogContent>
       </Dialog>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="font-medium text-blue-800 mb-2">🔄 Modo Demo</h3>
-        <p className="text-sm text-blue-700">
-          Esta página está funcionando con datos de ejemplo para garantizar que siempre cargue correctamente. 
-          La interfaz completa está disponible: crear, editar, eliminar, ver y asignar trabajadores.
-        </p>
-      </div>
     </div>
   )
 }
