@@ -37,7 +37,7 @@ export default function CiclosPage() {
     nombre: '',
     fecha_inicio: '',
     fecha_fin: '',
-    plantilla_id: ''
+    plantilla_id: '' as string | null
   })
 
   useEffect(() => {
