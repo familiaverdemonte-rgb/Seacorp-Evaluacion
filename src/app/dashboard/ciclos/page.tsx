@@ -720,7 +720,7 @@ export default function CiclosPage() {
               
               <div>
                 <Label htmlFor="filtro-area">Filtrar por Área</Label>
-                <Select value={filtroArea} onValueChange={setFiltroArea}>
+                <Select value={filtroArea} onValueChange={(value) => setFiltroArea(value || '')}>
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Todas las áreas" />
                   </SelectTrigger>
@@ -737,7 +737,7 @@ export default function CiclosPage() {
               
               <div>
                 <Label htmlFor="filtro-puesto">Filtrar por Puesto</Label>
-                <Select value={filtroPuesto} onValueChange={setFiltroPuesto}>
+                <Select value={filtroPuesto} onValueChange={(value) => setFiltroPuesto(value || '')}>
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder={filtroArea ? "Puestos del área" : "Todos los puestos"} />
                   </SelectTrigger>
