@@ -272,7 +272,7 @@ export default function CiclosPage() {
           ciclo_id: selectedCiclo.id,
           evaluador_id: trabajadorId, // El trabajador se evalúa a sí mismo
           estado: 'pendiente',
-          tipo_evaluador: 'autoevaluacion'
+          tipo_evaluador: 'auto'
         })
         
         // Evaluación de pares (simulado - puedes ajustar la lógica)
@@ -304,7 +304,7 @@ export default function CiclosPage() {
       setSelectedTrabajadores([])
       loadData() // Recargar datos para actualizar contador
       
-      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados con ${selectedTrabajadores.length * 3} evaluaciones (jefe, autoevaluación, pares)`)
+      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados con ${selectedTrabajadores.length * 3} evaluaciones (jefe, auto, pares)`)
       
     } catch (error) {
       console.error('❌ Error completo al asignar trabajadores:', error)
