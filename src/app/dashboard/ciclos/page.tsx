@@ -43,8 +43,67 @@ export default function CiclosPage() {
     try {
       setLoading(true)
       
-      // Datos de ejemplo garantizados - SIEMPRE funcionan
-      console.log('🔄 Cargando datos de ejemplo garantizados...')
+      // Debug: Verificar configuración de Supabase
+      console.log('🔍 Iniciando carga de datos...')
+      console.log('🔍 Variables de entorno:', {
+        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅' : '❌',
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅' : '❌',
+        NODE_ENV: process.env.NODE_ENV
+      })
+      
+      // Intentar cargar datos reales primero
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        console.log('✅ Variables detectadas, intentando conexión real...')
+        
+        try {
+          // Importar servicios dinámicamente
+          const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
+          const { PlantillasService } = await import('@/services/plantillas')
+          const { TrabajadoresService } = await import('@/services/trabajadores')
+          
+          const [ciclosData, plantillasData, trabajadoresData] = await Promise.all([
+            CiclosEvaluacionService.getAll().catch(err => {
+              console.error('❌ Error cargando ciclos:', err)
+              return []
+            }),
+            PlantillasService.getAll().catch(err => {
+              console.error('❌ Error cargando plantillas:', err)
+              return []
+            }),
+            TrabajadoresService.getAll().catch(err => {
+              console.error('❌ Error cargando trabajadores:', err)
+              return []
+            })
+          ])
+          
+          if (ciclosData.length > 0 || plantillasData.length > 0 || trabajadoresData.length > 0) {
+            console.log('✅ Datos reales cargados:', {
+              ciclos: ciclosData.length,
+              plantillas: plantillasData.length,
+              trabajadores: trabajadoresData.length
+            })
+            
+            setCiclos(ciclosData)
+            setPlantillas(plantillasData)
+            setTrabajadores(trabajadoresData)
+            
+            // Extraer áreas únicas de los trabajadores
+            const uniqueAreas = Array.from(new Set(
+              trabajadoresData
+                .map(t => t.area?.nombre)
+                .filter(Boolean)
+            )).map(nombre => ({ id: 0, nombre }))
+            setAreas(uniqueAreas)
+            
+            return // Salir si cargó datos reales
+          }
+        } catch (error) {
+          console.error('❌ Error cargando datos reales:', error)
+        }
+      }
+      
+      // Fallback a datos de ejemplo si no hay variables o falla la conexión
+      console.log('🔄 Usando datos de ejemplo (variables no configuradas o conexión falló)...')
       
       const exampleCiclos = [
         {
@@ -100,7 +159,7 @@ export default function CiclosPage() {
       setTrabajadores(exampleTrabajadores)
       setAreas(exampleAreas)
       
-      console.log('✅ Datos cargados exitosamente:', {
+      console.log('✅ Datos de ejemplo cargados:', {
         ciclos: exampleCiclos.length,
         plantillas: examplePlantillas.length,
         trabajadores: exampleTrabajadores.length,
@@ -108,7 +167,7 @@ export default function CiclosPage() {
       })
       
     } catch (error) {
-      console.error('❌ Error en loadData:', error)
+      console.error('❌ Error general en loadData:', error)
     } finally {
       setLoading(false)
     }
