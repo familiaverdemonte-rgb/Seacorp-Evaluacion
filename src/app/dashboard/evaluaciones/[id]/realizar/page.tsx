@@ -507,7 +507,7 @@ export default function RealizarEvaluacionPage() {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-6">
-                  {seccion.preguntas.map((pregunta) => (
+                  {seccion.preguntas.map((pregunta: any) => (
                     <div key={pregunta.id} className="border-l-4 border-l-corporate-blue pl-4">
                       <div className="space-y-3">
                         <div className="flex items-start justify-between">
