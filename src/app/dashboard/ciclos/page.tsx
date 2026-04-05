@@ -113,6 +113,7 @@ export default function CiclosPage() {
         nombre: formData.nombre,
         fecha_inicio: formData.fecha_inicio,
         fecha_fin: formData.fecha_fin,
+        estado: 'abierto',
         plantilla_id: formData.plantilla_id ? parseInt(formData.plantilla_id) : null
       })
       setFormData({ nombre: '', fecha_inicio: '', fecha_fin: '', plantilla_id: '' })
