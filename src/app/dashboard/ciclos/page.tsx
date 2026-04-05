@@ -436,7 +436,7 @@ export default function CiclosPage() {
       render: (value: string) => getEstadoBadge(value)
     },
     {
-      key: 'plantilla',
+      key: 'plantilla_id',
       header: 'Plantilla',
       sortable: true,
       render: (value: any, row: CicloEvaluacion) => (
