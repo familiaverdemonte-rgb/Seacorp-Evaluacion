@@ -96,7 +96,7 @@ export class AreasService {
 
     // Para cada área, obtener estadísticas
     const areasWithStats = await Promise.all(
-      (areas || []).map(async (area) => {
+      (areas || []).map(async (area: any) => {
         // Contar trabajadores
         const { data: trabajadores, error: trabajadoresError } = await supabase
           .from('trabajadores')
@@ -108,7 +108,7 @@ export class AreasService {
         const trabajadoresCount = trabajadores?.length || 0
 
         // Obtener puestos únicos
-        const puestosUnicos = [...new Set(trabajadores?.map(t => t.puesto).filter(Boolean) || [])]
+        const puestosUnicos = [...new Set(trabajadores?.map((t: any) => t.puesto).filter(Boolean) || [])]
 
         // TODO: Calcular promedio de desempeño real
         const promedioDesempeno = 0
