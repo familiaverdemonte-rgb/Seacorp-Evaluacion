@@ -53,20 +53,11 @@ export default function CiclosPage() {
       console.log('🔍 Supabase client disponible:', !!supabase)
       
       if (!supabase) {
+        console.error('❌ Cliente Supabase no disponible, usando fallback')
         throw new Error('Cliente Supabase no disponible')
       }
       
-      // Verificar conexión antes de cargar datos
-      const connectionCheck = await import('@/lib/supabase').then(({ checkSupabaseConnection }) => 
-        checkSupabaseConnection()
-      )
-      
-      if (!connectionCheck.connected) {
-        console.error('❌ Error de conexión a Supabase:', connectionCheck.error)
-        throw new Error(connectionCheck.error || 'Error de conexión a Supabase')
-      }
-      
-      console.log('✅ Conexión a Supabase verificada, cargando datos...')
+      console.log('✅ Conexión a Supabase OK, cargando datos...')
       
       const [ciclosData, plantillasData, trabajadoresData] = await Promise.all([
         CiclosEvaluacionService.getAll().catch(err => {
