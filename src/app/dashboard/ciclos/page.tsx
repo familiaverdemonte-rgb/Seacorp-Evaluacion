@@ -46,16 +46,22 @@ export default function CiclosPage() {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [ciclosData, plantillasData, trabajadoresData, areasData] = await Promise.all([
+      const [ciclosData, plantillasData, trabajadoresData] = await Promise.all([
         CiclosEvaluacionService.getAll(),
         PlantillasService.getAll(),
-        TrabajadoresService.getAll(),
-        TrabajadoresService.getAreas()
+        TrabajadoresService.getAll()
       ])
       setCiclos(ciclosData)
       setPlantillas(plantillasData)
       setTrabajadores(trabajadoresData)
-      setAreas(areasData)
+      
+      // Extraer áreas únicas de los trabajadores
+      const uniqueAreas = Array.from(new Set(
+        trabajadoresData
+          .map(t => t.area?.nombre)
+          .filter(Boolean)
+      )).map(nombre => ({ id: 0, nombre }))
+      setAreas(uniqueAreas)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {
