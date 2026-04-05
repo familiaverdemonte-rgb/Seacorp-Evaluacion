@@ -550,7 +550,7 @@ export default function CiclosPage() {
               </div>
               <div className="w-48">
                 <Label htmlFor="area">Filtrar por Área</Label>
-                <Select value={selectedArea} onValueChange={setSelectedArea}>
+                <Select value={selectedArea} onValueChange={(value) => setSelectedArea(value || '')}>
                   <SelectTrigger>
                     <SelectValue placeholder="Todas las áreas" />
                   </SelectTrigger>
