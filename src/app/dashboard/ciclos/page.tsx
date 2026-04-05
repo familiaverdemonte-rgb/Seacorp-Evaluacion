@@ -266,13 +266,13 @@ export default function CiclosPage() {
           tipo_evaluador: 'jefe'
         })
         
-        // Autoevaluación
+        // Evaluación de RRHH
         evaluacionesToCreate.push({
           trabajador_id: trabajadorId,
           ciclo_id: selectedCiclo.id,
-          evaluador_id: trabajadorId, // El trabajador se evalúa a sí mismo
+          evaluador_id: 1, // ID del evaluador RRHH
           estado: 'pendiente',
-          tipo_evaluador: 'autoevaluador'
+          tipo_evaluador: 'rrhh'
         })
         
         // Evaluación de pares (simulado - puedes ajustar la lógica)
@@ -304,7 +304,7 @@ export default function CiclosPage() {
       setSelectedTrabajadores([])
       loadData() // Recargar datos para actualizar contador
       
-      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados con ${selectedTrabajadores.length * 3} evaluaciones (jefe, auto, pares)`)
+      alert(`✅ ${selectedTrabajadores.length} trabajadores asignados con ${selectedTrabajadores.length * 3} evaluaciones (jefe, rrhh, par)`)
       
     } catch (error) {
       console.error('❌ Error completo al asignar trabajadores:', error)
