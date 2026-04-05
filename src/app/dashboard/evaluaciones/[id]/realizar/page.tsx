@@ -276,7 +276,7 @@ export default function RealizarEvaluacionPage() {
       
       try {
         // Obtener plantilla del ciclo
-        if (evaluacion.ciclo_id) {
+        if (evaluacion?.ciclo_id) {
           console.log('🔍 Buscando ciclo:', evaluacion.ciclo_id)
           const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
           const ciclo = await CiclosEvaluacionService.getById(evaluacion.ciclo_id)
