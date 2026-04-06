@@ -416,12 +416,17 @@ export default function PlantillasPage() {
     }
     
     try {
+      // Determinar si es general o específica por área
+      const esGeneral = !formData.preguntaArea || formData.preguntaArea === ''
+      const areaId = formData.preguntaArea ? parseInt(formData.preguntaArea) : null
+      
       console.log('📋 Creando pregunta:', {
         seccion_id: selectedSeccion.id,
         texto: formData.preguntaTexto.trim(),
         tipo: 'escala_1_5',
         peso: formData.preguntaPeso,
-        es_general: false
+        es_general: esGeneral,
+        area_id: areaId
       })
       
       const preguntaData = {
@@ -429,8 +434,8 @@ export default function PlantillasPage() {
         texto: formData.preguntaTexto.trim(),
         tipo: 'escala_1_5' as const,
         peso: formData.preguntaPeso,
-        es_general: false
-        // Eliminado area_id que no existe en la BD
+        es_general: esGeneral,
+        area_id: areaId
       }
       
       const result = await PreguntasService.create(preguntaData)
@@ -943,20 +948,23 @@ export default function PlantillasPage() {
                                   </p>
                                 </div>
                                 <div>
-                                  <Label htmlFor="preguntaArea">Área</Label>
+                                  <Label htmlFor="preguntaArea">Área (opcional - General si no selecciona)</Label>
                                   <select
                                     id="preguntaArea"
                                     value={formData.preguntaArea}
                                     onChange={(e) => setFormData(prev => ({ ...prev, preguntaArea: e.target.value }))}
                                     className="w-full p-2 border rounded-md font-corporate"
                                   >
-                                    <option value="">General</option>
+                                    <option value="">General (aplica a todas las áreas)</option>
                                     {areas.map((area) => (
                                       <option key={area.id} value={area.id}>
                                         {area.nombre}
                                       </option>
                                     ))}
                                   </select>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    Si seleccionas un área, esta pregunta solo aplicará a trabajadores de esa área.
+                                  </p>
                                 </div>
                                 <div className="flex justify-end space-x-2">
                                   <Button variant="outline" onClick={() => setShowPreguntaDialog(false)}>

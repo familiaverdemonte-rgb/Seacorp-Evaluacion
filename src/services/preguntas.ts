@@ -34,6 +34,17 @@ export class PreguntasService {
     return data || []
   }
 
+  static async getByArea(areaId: number): Promise<Pregunta[]> {
+    const { data, error } = await supabase
+      .from('preguntas')
+      .select('*')
+      .eq('area_id', areaId)
+      .order('texto', { ascending: true })
+
+    if (error) throw error
+    return data || []
+  }
+
   static async create(pregunta: Omit<Pregunta, 'id'>): Promise<Pregunta> {
     console.log('🔍 PreguntasService.create - Iniciando...', pregunta)
     

@@ -52,7 +52,7 @@ export interface Pregunta {
   tipo: 'escala_1_5'
   peso: number
   es_general: boolean
-  // area_id eliminado - no existe en la BD
+  area_id?: number // Agregado campo área (opcional para preguntas generales)
 }
 
 export interface Evaluacion {
