@@ -418,7 +418,7 @@ export default function PlantillasPage() {
     try {
       // Determinar si es general o específica por área
       const esGeneral = !formData.preguntaArea || formData.preguntaArea === ''
-      const areaId = formData.preguntaArea ? parseInt(formData.preguntaArea) : null
+      const areaId = formData.preguntaArea ? parseInt(formData.preguntaArea) : undefined
       
       console.log('📋 Creando pregunta:', {
         seccion_id: selectedSeccion.id,
