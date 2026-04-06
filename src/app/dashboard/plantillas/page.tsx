@@ -417,8 +417,8 @@ export default function PlantillasPage() {
     
     try {
       // Determinar si es general o específica por área
-      const esGeneral = !formData.preguntaArea || formData.preguntaArea === ''
-      const areaId = formData.preguntaArea ? parseInt(formData.preguntaArea) : undefined
+      const esGeneral = !formData.preguntaArea || formData.preguntaArea === '' || formData.preguntaArea === 'null'
+      const areaId = formData.preguntaArea && formData.preguntaArea !== '' && formData.preguntaArea !== 'null' ? parseInt(formData.preguntaArea) : undefined
       
       console.log('📋 Creando pregunta:', {
         seccion_id: selectedSeccion.id,
@@ -426,7 +426,10 @@ export default function PlantillasPage() {
         tipo: 'escala_1_5',
         peso: formData.preguntaPeso,
         es_general: esGeneral,
-        area_id: areaId
+        area_id: areaId,
+        preguntaAreaOriginal: formData.preguntaArea,
+        debug_esGeneral: esGeneral,
+        debug_areaId: areaId
       })
       
       const preguntaData = {
