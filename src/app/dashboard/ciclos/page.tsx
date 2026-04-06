@@ -418,12 +418,12 @@ export default function CiclosPage() {
   }
 
   const handleSelectAllTrabajadores = () => {
-    const filteredIds = filteredTrabajadores.map(t => t.id)
-    setSelectedTrabajadores(filteredIds)
-  }
-
-  const handleDeselectAllTrabajadores = () => {
-    setSelectedTrabajadores([])
+    if (selectedTrabajadores.length === filteredTrabajadores.length && filteredTrabajadores.length > 0) {
+      setSelectedTrabajadores([])
+    } else {
+      const filteredIds = filteredTrabajadores.map(t => t.id)
+      setSelectedTrabajadores(filteredIds)
+    }
   }
 
   const handleSearchTrabajadores = (query: string) => {
@@ -756,15 +756,10 @@ export default function CiclosPage() {
                   onClick={handleSelectAllTrabajadores}
                   disabled={filteredTrabajadores.length === 0}
                 >
-                  Seleccionar Todos ({filteredTrabajadores.length})
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDeselectAllTrabajadores}
-                  disabled={selectedTrabajadores.length === 0}
-                >
-                  Deseleccionar Todos ({selectedTrabajadores.length})
+                  {selectedTrabajadores.length === filteredTrabajadores.length && filteredTrabajadores.length > 0 
+                    ? `Deseleccionar Todos (${selectedTrabajadores.length})` 
+                    : `Seleccionar Todos (${filteredTrabajadores.length})`
+                  }
                 </Button>
               </div>
             </div>
