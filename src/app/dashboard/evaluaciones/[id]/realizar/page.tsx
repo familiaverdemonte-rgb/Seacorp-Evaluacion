@@ -274,24 +274,25 @@ export default function RealizarEvaluacionPage() {
       // Obtener plantilla del ciclo
       let plantillaId = 1 // ID de plantilla por defecto
       
-      try {
-        // Obtener plantilla del ciclo
-        if (evaluacion?.ciclo_id) {
+      if (evaluacion?.ciclo_id) {
+        try {
           console.log('🔍 Buscando ciclo:', evaluacion.ciclo_id)
           const { CiclosEvaluacionService } = await import('@/services/ciclos-evaluacion')
           const ciclo = await CiclosEvaluacionService.getById(evaluacion.ciclo_id)
           console.log('📋 Ciclo encontrado:', ciclo)
           
-          if (ciclo.plantilla_id) {
+          if (ciclo && ciclo.plantilla_id) {
             plantillaId = ciclo.plantilla_id
             console.log('✅ Usando plantilla del ciclo:', plantillaId)
           } else {
-            console.log('⚠️ El ciclo no tiene plantilla asignada, usando plantilla por defecto')
+            console.log('⚠️ El ciclo no tiene plantilla asignada, usando plantilla por defecto:', plantillaId)
           }
+        } catch (error) {
+          console.error('❌ Error obteniendo plantilla del ciclo:', error)
+          console.log('📋 Usando plantilla por defecto:', plantillaId)
         }
-      } catch (error) {
-        console.log('❌ Error obteniendo plantilla del ciclo:', error)
-        console.log('📋 Usando plantilla por defecto')
+      } else {
+        console.log('⚠️ No hay ciclo_id en la evaluación, usando plantilla por defecto:', plantillaId)
       }
       
       console.log('🎯 Plantilla final a usar:', plantillaId)
