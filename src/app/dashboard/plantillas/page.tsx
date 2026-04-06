@@ -25,6 +25,7 @@ export default function PlantillasPage() {
   const [showPreguntaDialog, setShowPreguntaDialog] = useState(false)
   const [selectedPlantilla, setSelectedPlantilla] = useState<PlantillaCompleta | null>(null)
   const [selectedSeccion, setSelectedSeccion] = useState<Seccion | null>(null)
+  const [selectedPregunta, setSelectedPregunta] = useState<Pregunta | null>(null)
   const [editingPlantilla, setEditingPlantilla] = useState<Plantilla | null>(null)
   const [formData, setFormData] = useState({
     nombre: '',
@@ -1075,11 +1076,12 @@ export default function PlantillasPage() {
                                   size="sm"
                                   onClick={() => {
                                     console.log('✏️ Editar pregunta:', pregunta)
+                                    setSelectedPregunta(pregunta)
                                     setFormData(prev => ({ 
                                       ...prev, 
                                       preguntaTexto: pregunta.texto, 
                                       preguntaPeso: pregunta.peso,
-                                      preguntaArea: (pregunta as any).area?.id || ''
+                                      preguntaArea: pregunta.area_id?.toString() || ''
                                     }))
                                     setSelectedSeccion(seccion)
                                     setShowPreguntaDialog(true)
