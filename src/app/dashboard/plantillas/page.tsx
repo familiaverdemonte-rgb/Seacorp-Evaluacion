@@ -520,8 +520,28 @@ export default function PlantillasPage() {
     
     try {
       // Determinar si es general o específica por área
-      const esGeneral = !formData.preguntaArea || formData.preguntaArea === '' || formData.preguntaArea === 'null'
-      const areaId = formData.preguntaArea && formData.preguntaArea !== '' && formData.preguntaArea !== 'null' ? parseInt(formData.preguntaArea) : undefined
+      console.log('🔍 Antes de la lógica:', {
+        preguntaArea: formData.preguntaArea,
+        tipo: typeof formData.preguntaArea,
+        longitud: formData.preguntaArea?.length,
+        valorExacto: JSON.stringify(formData.preguntaArea)
+      })
+      
+      // Lógica mejorada para detectar "General"
+      const esGeneral = (
+        !formData.preguntaArea || 
+        formData.preguntaArea === '' || 
+        formData.preguntaArea === 'null' ||
+        formData.preguntaArea === null ||
+        formData.preguntaArea === undefined ||
+        (typeof formData.preguntaArea === 'string' && formData.preguntaArea.trim() === '')
+      )
+      
+      const areaId = esGeneral ? undefined : (
+        formData.preguntaArea && formData.preguntaArea !== '' && formData.preguntaArea !== 'null' ? 
+        parseInt(formData.preguntaArea) : 
+        undefined
+      )
       
       console.log('📋 Lógica de edición:', {
         formData_preguntaArea: formData.preguntaArea,
