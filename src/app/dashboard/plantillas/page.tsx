@@ -495,6 +495,11 @@ export default function PlantillasPage() {
 
   const handleEditPregunta = async () => {
     console.log('✏️ Iniciando edición de pregunta...')
+    console.log('🔍 Estado actual al iniciar edición:', {
+      selectedPregunta: selectedPregunta,
+      formData_preguntaArea: formData.preguntaArea,
+      formData_preguntaTexto: formData.preguntaTexto
+    })
     
     if (!selectedSeccion) {
       console.error('❌ Error: No hay una sección seleccionada')
@@ -517,6 +522,14 @@ export default function PlantillasPage() {
       // Determinar si es general o específica por área
       const esGeneral = !formData.preguntaArea || formData.preguntaArea === '' || formData.preguntaArea === 'null'
       const areaId = formData.preguntaArea && formData.preguntaArea !== '' && formData.preguntaArea !== 'null' ? parseInt(formData.preguntaArea) : undefined
+      
+      console.log('📋 Lógica de edición:', {
+        formData_preguntaArea: formData.preguntaArea,
+        esGeneral: esGeneral,
+        areaId: areaId,
+        tipo_area: typeof formData.preguntaArea,
+        valor_area: formData.preguntaArea
+      })
       
       console.log('📋 Editando pregunta:', {
         seccion_id: selectedSeccion.id,
