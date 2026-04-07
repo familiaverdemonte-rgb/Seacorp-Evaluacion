@@ -76,14 +76,37 @@ export class PreguntasService {
   }
 
   static async update(id: number, pregunta: Partial<Pregunta>): Promise<Pregunta> {
+    console.log('🔄 Actualizando pregunta:', { id, pregunta })
+    
+    // Verificar si area_id existe en la tabla antes de intentar actualizar
+    const preguntaData: any = { ...pregunta }
+    
+    // Si area_id es undefined, no incluirlo en la actualización
+    if (preguntaData.area_id === undefined) {
+      delete preguntaData.area_id
+      console.log('🗑️ Eliminando area_id de la actualización (no existe en BD)')
+    }
+    
+    console.log('📋 Datos finales a actualizar:', preguntaData)
+    
     const { data, error } = await supabase
       .from('preguntas')
-      .update(pregunta)
+      .update(preguntaData)
       .eq('id', id)
       .select('*')
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('❌ Error de Supabase al actualizar:', error)
+      throw new Error(`Error de Supabase: ${error.message}`)
+    }
+
+    if (!data) {
+      console.error('❌ No se recibieron datos de Supabase al actualizar')
+      throw new Error('No se recibieron datos de Supabase al actualizar')
+    }
+
+    console.log('✅ Pregunta actualizada exitosamente:', data)
     return data
   }
 
