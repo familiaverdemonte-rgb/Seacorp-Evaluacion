@@ -455,7 +455,41 @@ export default function PlantillasPage() {
       }
     } catch (error) {
       console.error('Error al crear pregunta:', error)
-      alert('✅ Pregunta creada correctamente (modo demo - conexión real falló)')
+      
+      // Verificar si el error es por el campo area_id que no existe en la BD
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (errorMessage.includes('area_id')) {
+        console.log('❌ Error detectado: area_id no existe en la BD')
+        console.log('🔄 Intentando crear pregunta sin area_id...')
+        
+        // Determinar si es general o específica por área
+        const esGeneral = !formData.preguntaArea || formData.preguntaArea === '' || formData.preguntaArea === 'null'
+        
+        // Intentar crear pregunta sin area_id
+        const preguntaDataSinArea = {
+          seccion_id: selectedSeccion.id,
+          texto: formData.preguntaTexto.trim(),
+          tipo: 'escala_1_5' as const,
+          peso: formData.preguntaPeso,
+          es_general: esGeneral
+          // Sin area_id temporalmente
+        }
+        
+        try {
+          const result = await PreguntasService.create(preguntaDataSinArea)
+          if (result && result.id) {
+            alert('✅ Pregunta creada correctamente (sin área - campo no disponible en BD)')
+            setShowPreguntaDialog(false)
+            setFormData(prev => ({ ...prev, preguntaTexto: '', preguntaPeso: 10, preguntaArea: '' }))
+            loadPlantillaCompleta(selectedPlantilla?.id || 0)
+            return
+          }
+        } catch (error2) {
+          console.error('Error también sin area_id:', error2)
+        }
+      }
+      
+      alert('❌ Error: No se pudo crear la pregunta. Revisa la consola para más detalles.')
     }
   }
 
@@ -1013,7 +1047,7 @@ export default function PlantillasPage() {
                                     onClick={selectedPregunta ? handleEditPregunta : handleCreatePregunta}
                                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                                   >
-                                    {selectedPregunta ? 'Actualizar Pregunta' : 'Crear Pregunta'}
+                                    {selectedPregunta ? 'Actualizar Pregunta' : 'Agregar Pregunta'}
                                   </Button>
                                 </div>
                               </div>
