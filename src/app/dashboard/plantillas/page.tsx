@@ -961,7 +961,18 @@ export default function PlantillasPage() {
                         <div className="flex space-x-2">
                           <Dialog open={showPreguntaDialog && selectedSeccion?.id === seccion.id} onOpenChange={(open) => {
                             setShowPreguntaDialog(open)
-                            if (open) setSelectedSeccion(seccion)
+                            if (open) {
+                              setSelectedSeccion(seccion)
+                            } else {
+                              // Limpiar estado al cerrar el diálogo (por ESC o clic fuera)
+                              setSelectedPregunta(null)
+                              setFormData(prev => ({ 
+                                ...prev, 
+                                preguntaTexto: '', 
+                                preguntaPeso: 10, 
+                                preguntaArea: '' 
+                              }))
+                            }
                           }}>
                             <DialogTrigger>
                               <Button 
