@@ -1069,7 +1069,17 @@ export default function PlantillasPage() {
                                   <select
                                     id="preguntaArea"
                                     value={formData.preguntaArea}
-                                    onChange={(e) => setFormData(prev => ({ ...prev, preguntaArea: e.target.value }))}
+                                    onChange={(e) => {
+                                    console.log('🔄 CAMBIO EN SELECT DE ÁREA:', {
+                                      valorAnterior: formData.preguntaArea,
+                                      valorNuevo: e.target.value,
+                                      tipoValorNuevo: typeof e.target.value,
+                                      esVacio: e.target.value === '',
+                                      esNull: e.target.value === 'null',
+                                      longitud: e.target.value?.length
+                                    })
+                                    setFormData(prev => ({ ...prev, preguntaArea: e.target.value }))
+                                  }}
                                     className="w-full p-2 border rounded-md font-corporate"
                                   >
                                     <option value="">General (aplica a todas las áreas)</option>
