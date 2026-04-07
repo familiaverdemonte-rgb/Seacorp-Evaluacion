@@ -1040,7 +1040,17 @@ export default function PlantillasPage() {
                                   </p>
                                 </div>
                                 <div className="flex justify-end space-x-2">
-                                  <Button variant="outline" onClick={() => setShowPreguntaDialog(false)}>
+                                  <Button variant="outline" onClick={() => {
+                                    console.log('🚫 Botón Cancelar presionado - limpiando estado')
+                                    setSelectedPregunta(null)
+                                    setFormData(prev => ({ 
+                                      ...prev, 
+                                      preguntaTexto: '', 
+                                      preguntaPeso: 10, 
+                                      preguntaArea: '' 
+                                    }))
+                                    setShowPreguntaDialog(false)
+                                  }}>
                                     Cancelar
                                   </Button>
                                   <Button 
